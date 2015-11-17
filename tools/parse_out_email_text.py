@@ -38,11 +38,13 @@ def parseOutText(f):
         stemmer = SnowballStemmer("english")
         sw = stopwords.words('english')
 
-
         for word in text_string.split():
             stemmed_word = stemmer.stem(word)
-            if word not in sw:
-                words += " "+str(stemmed_word)
+#            if stemmed_word not in sw:
+            if words == "":
+                words += str(stemmed_word)
+            else:
+                words += " "+(str(stemmed_word))
 
 
     return words
