@@ -16,10 +16,10 @@ from tester import dump_classifier_and_data
 ### 'salary', 'to_messages', 'deferral_payments', 'total_payments', 'exercised_stock_options', 'bonus', 'restricted_stock', 'shared_receipt_with_poi', 'restricted_stock_deferred', 'total_stock_value', 'expenses', 'loan_advances', 'from_messages', 'other', 'from_this_person_to_poi', 'poi', 'director_fees', 'deferred_income', 'long_term_incentive', 'email_address', 'from_poi_to_this_person'
 
 ### The first feature must be "poi".
-features_list = ['poi','shared_receipt_with_poi','fraction_from_poi'] # You will need to use more features
+features_list = ['poi', 'salary', 'bonus' ] # You will need to use more features
 #
 # Final feature list:
-# features = ['poi','salary','bonus','from_this_person_to_poi','from_poi_to_this_person','fraction_from_poi','fraction_to_poi','log_total_emails_ratio','shared_receipt_with_poi','director_fees','deferral_payments','log_poi_emails_ratio']
+# features = ['poi', 'salary', 'bonus', 'from_this_person_to_poi', 'from_poi_to_this_person', 'fraction_from_poi', 'fraction_to_poi', 'log_total_emails_ratio', 'shared_receipt_with_poi', 'director_fees', 'deferral_payments', 'log_poi_emails_ratio']
 # These features do not seam to be very relevant to distinguish POI from non-POI:
 # expenses, exercised_stock_options, loan_advances
 # 5 Best features:
@@ -80,6 +80,7 @@ if len(features_list) == 3:
     feature1, feature2 = zip(*features)
     feature1 = numpy.reshape( numpy.array(feature1), (len(feature1), 1))
     feature2 = numpy.reshape( numpy.array(feature2), (len(feature2), 1))
+    print len(feature1)
 
     minoroutliers1, majoroutliers1 = findOuliers(feature1)
     if len(majoroutliers1):
@@ -102,12 +103,13 @@ if len(features_list) == 3:
     plt.scatter(feature1,feature2)
     for ii, pp in enumerate(feature1):
         if poi[ii]:
-            plt.scatter(features[ii][0], features[ii][1], color="r", marker="*")
+#            plt.scatter(features[ii][0], features[ii][1], color="r", marker="*")
+            plt.scatter(feature1[ii], feature2[ii], color="r", marker="*")
 
     plt.xlabel(features_list[1])
     plt.ylabel(features_list[2])
     # plt.xscale('log')
-    # plt.yscale('log')
+    plt.yscale('log')
 
     # Plot POIs and non-POIs in different colors and a legend
     import matplotlib.patches as mpatches
@@ -145,7 +147,7 @@ features_train, features_test, labels_train, labels_test = train_test_split(feat
 print "Fraction of POIs in the test dataset:",float(sum(labels_test))/float(sum(labels_train)+sum(labels_test))
 
 from sklearn.feature_selection import SelectKBest
-selector = SelectKBest(k=5)
+selector = SelectKBest(k=6)
 X_train = selector.fit_transform(features_train, labels_train)
 X_test  = selector.transform(features_test)
 
